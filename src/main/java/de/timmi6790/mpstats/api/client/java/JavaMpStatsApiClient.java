@@ -1,9 +1,9 @@
 package de.timmi6790.mpstats.api.client.java;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import de.timmi6790.mpstats.api.client.BaseApiClient;
-import de.timmi6790.mpstats.api.client.java.deserializer.player.JavaPlayerDeserializer;
-import de.timmi6790.mpstats.api.client.java.models.player.JavaPlayer;
+import de.timmi6790.mpstats.api.client.common.BaseApiClient;
+import de.timmi6790.mpstats.api.client.java.player.deserializers.JavaPlayerDeserializer;
+import de.timmi6790.mpstats.api.client.java.player.models.JavaPlayer;
 
 public class JavaMpStatsApiClient extends BaseApiClient<JavaPlayer> {
     public JavaMpStatsApiClient(final String baseUrl, final String apiKey) {
