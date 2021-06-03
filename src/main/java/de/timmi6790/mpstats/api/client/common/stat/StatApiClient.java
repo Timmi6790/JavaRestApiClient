@@ -4,25 +4,33 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import de.timmi6790.mpstats.api.client.AbstractApiClient;
+import de.timmi6790.mpstats.api.client.common.stat.deserializers.InvalidStatNameRestExceptionDeserializer;
 import de.timmi6790.mpstats.api.client.common.stat.deserializers.StatDeserializer;
+import de.timmi6790.mpstats.api.client.common.stat.exceptions.InvalidStatNameRestException;
 import de.timmi6790.mpstats.api.client.common.stat.models.Stat;
+import de.timmi6790.mpstats.api.client.exception.BaseRestException;
+import de.timmi6790.mpstats.api.client.exception.ExceptionHandler;
+import de.timmi6790.mpstats.api.client.exception.exceptions.UnknownApiException;
 import okhttp3.HttpUrl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class StatApiClient extends AbstractApiClient {
     public StatApiClient(final String baseUrl,
                          final String apiKey,
                          final String schema,
-                         final ObjectMapper objectMapper) {
-        super(baseUrl, apiKey, schema, objectMapper);
+                         final ObjectMapper objectMapper,
+                         final ExceptionHandler exceptionHandler) {
+        super(baseUrl, apiKey, schema, objectMapper, exceptionHandler);
 
         this.getObjectMapper().registerModule(
                 new SimpleModule()
                         .addDeserializer(Stat.class, new StatDeserializer(Stat.class))
+                        .addDeserializer(InvalidStatNameRestException.class, new InvalidStatNameRestExceptionDeserializer(InvalidStatNameRestException.class))
         );
+
+        exceptionHandler.registerException("stat-1", InvalidStatNameRestException.class);
     }
 
     protected String getStatBaseUrl() {
@@ -38,12 +46,18 @@ public class StatApiClient extends AbstractApiClient {
         ).orElseGet(ArrayList::new);
     }
 
-    public Optional<Stat> getStat(final String statName) {
+    public Stat getStat(final String statName) throws InvalidStatNameRestException {
         final HttpUrl url = HttpUrl.parse(this.getStatBaseUrl() + "/" + statName);
-        return this.getGetResponse(
-                url,
-                Stat.class
-        );
+        try {
+            return this.getGetResponseThrow(
+                    url,
+                    Stat.class
+            );
+        } catch (final InvalidStatNameRestException e) {
+            throw e;
+        } catch (final BaseRestException baseRestException) {
+            throw new UnknownApiException(baseRestException);
+        }
     }
 
     public Stat createStat(final String statName,

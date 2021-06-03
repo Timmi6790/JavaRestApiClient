@@ -5,16 +5,20 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import de.timmi6790.mpstats.api.client.AbstractApiClient;
+import de.timmi6790.mpstats.api.client.common.board.exceptions.InvalidBoardNameException;
 import de.timmi6790.mpstats.api.client.common.filter.models.Reason;
-import de.timmi6790.mpstats.api.client.common.leaderboard.deserializers.LeaderboardDeserializer;
-import de.timmi6790.mpstats.api.client.common.leaderboard.deserializers.LeaderboardEntryDeserializer;
-import de.timmi6790.mpstats.api.client.common.leaderboard.deserializers.LeaderboardPositionEntryDeserializer;
-import de.timmi6790.mpstats.api.client.common.leaderboard.deserializers.LeaderboardPositionSaveDeserializer;
+import de.timmi6790.mpstats.api.client.common.game.exceptions.InvalidGameNameRestException;
+import de.timmi6790.mpstats.api.client.common.leaderboard.deserializers.*;
+import de.timmi6790.mpstats.api.client.common.leaderboard.exceptions.InvalidLeaderboardCombinationRestException;
 import de.timmi6790.mpstats.api.client.common.leaderboard.models.Leaderboard;
 import de.timmi6790.mpstats.api.client.common.leaderboard.models.LeaderboardEntry;
 import de.timmi6790.mpstats.api.client.common.leaderboard.models.LeaderboardPositionEntry;
 import de.timmi6790.mpstats.api.client.common.leaderboard.models.LeaderboardPositionSave;
 import de.timmi6790.mpstats.api.client.common.player.models.Player;
+import de.timmi6790.mpstats.api.client.common.stat.exceptions.InvalidStatNameRestException;
+import de.timmi6790.mpstats.api.client.exception.BaseRestException;
+import de.timmi6790.mpstats.api.client.exception.ExceptionHandler;
+import de.timmi6790.mpstats.api.client.exception.exceptions.UnknownApiException;
 import okhttp3.HttpUrl;
 
 import java.time.ZonedDateTime;
@@ -28,8 +32,9 @@ public class LeaderboardApiClient<P extends Player> extends AbstractApiClient {
                                 final String apiKey,
                                 final String schema,
                                 final ObjectMapper objectMapper,
+                                final ExceptionHandler exceptionHandler,
                                 final Class<P> playerClass) {
-        super(baseUrl, apiKey, schema, objectMapper);
+        super(baseUrl, apiKey, schema, objectMapper, exceptionHandler);
 
         final JavaType leaderboardPositionSaveType = this.getObjectMapper().getTypeFactory().constructParametricType(LeaderboardPositionSave.class, playerClass);
         final JavaType leaderboardEntryType = this.getObjectMapper().getTypeFactory().constructParametricType(LeaderboardEntry.class, playerClass);
@@ -41,7 +46,10 @@ public class LeaderboardApiClient<P extends Player> extends AbstractApiClient {
                         .addDeserializer(LeaderboardEntry.class, new LeaderboardEntryDeserializer<>(leaderboardEntryType, playerClass))
                         .addDeserializer(LeaderboardPositionEntry.class, new LeaderboardPositionEntryDeserializer<>(leaderboardPositionEntryType, leaderboardEntryType))
                         .addDeserializer(LeaderboardPositionSave.class, new LeaderboardPositionSaveDeserializer<>(leaderboardPositionSaveType, leaderboardPositionEntryType))
+                        .addDeserializer(InvalidLeaderboardCombinationRestException.class, new InvalidLeaderboardCombinationRestExceptionDeserializer(InvalidLeaderboardCombinationRestException.class))
         );
+
+        exceptionHandler.registerException("leaderboard-1", InvalidLeaderboardCombinationRestException.class);
     }
 
     protected String getLeaderboardBaseUrl() {
@@ -57,14 +65,20 @@ public class LeaderboardApiClient<P extends Player> extends AbstractApiClient {
         ).orElseGet(ArrayList::new);
     }
 
-    public Optional<Leaderboard> getLeaderboard(final String gameName,
-                                                final String statName,
-                                                final String boardName) {
+    public Leaderboard getLeaderboard(final String gameName,
+                                      final String statName,
+                                      final String boardName) throws InvalidGameNameRestException, InvalidStatNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
         final HttpUrl url = HttpUrl.parse(this.getLeaderboardBaseUrl() + "/" + gameName + "/" + statName + "/" + boardName);
-        return this.getGetResponse(
-                url,
-                Leaderboard.class
-        );
+        try {
+            return this.getGetResponseThrow(
+                    url,
+                    Leaderboard.class
+            );
+        } catch (final InvalidGameNameRestException | InvalidStatNameRestException | InvalidBoardNameException | InvalidLeaderboardCombinationRestException e) {
+            throw e;
+        } catch (final BaseRestException baseRestException) {
+            throw new UnknownApiException(baseRestException);
+        }
     }
 
     public Optional<Leaderboard> createdLeaderboard(final String gameName,
@@ -77,19 +91,25 @@ public class LeaderboardApiClient<P extends Player> extends AbstractApiClient {
 
     public List<ZonedDateTime> getLeaderboardSaveTimes(final String gameName,
                                                        final String statName,
-                                                       final String boardName) {
+                                                       final String boardName) throws InvalidGameNameRestException, InvalidStatNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
         final HttpUrl url = HttpUrl.parse(this.getLeaderboardBaseUrl() + "/" + gameName + "/" + statName + "/" + boardName + "/saves");
-        return this.getGetResponse(
-                url,
-                new TypeReference<List<ZonedDateTime>>() {
-                }
-        ).orElseGet(ArrayList::new);
+        try {
+            return this.getGetResponseThrow(
+                    url,
+                    new TypeReference<>() {
+                    }
+            );
+        } catch (final InvalidGameNameRestException | InvalidStatNameRestException | InvalidBoardNameException | InvalidLeaderboardCombinationRestException e) {
+            throw e;
+        } catch (final BaseRestException baseRestException) {
+            throw new UnknownApiException(baseRestException);
+        }
     }
 
     public Optional<LeaderboardPositionSave<P>> getLeaderboardSave(final String gameName,
                                                                    final String statName,
                                                                    final String boardName,
-                                                                   final Set<Reason> filterReasons) {
+                                                                   final Set<Reason> filterReasons) throws InvalidGameNameRestException, InvalidStatNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
         return this.getLeaderboardSave(gameName, statName, boardName, ZonedDateTime.now(), filterReasons);
     }
 
@@ -97,17 +117,23 @@ public class LeaderboardApiClient<P extends Player> extends AbstractApiClient {
                                                                    final String statName,
                                                                    final String boardName,
                                                                    final ZonedDateTime saveTime,
-                                                                   final Set<Reason> filterReasons) {
+                                                                   final Set<Reason> filterReasons) throws InvalidGameNameRestException, InvalidStatNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
         final HttpUrl.Builder httpBuilder = HttpUrl.parse(this.getLeaderboardBaseUrl() + "/" + gameName + "/" + statName + "/" + boardName + "/save")
                 .newBuilder()
                 .addQueryParameter("saveTime", saveTime.toString());
         for (final Reason reason : filterReasons) {
             httpBuilder.addQueryParameter("filterReasons", reason.toString());
         }
-        return this.getGetResponse(
-                httpBuilder.build(),
-                new TypeReference<>() {
-                }
-        );
+        try {
+            return this.getGetResponseThrow(
+                    httpBuilder.build(),
+                    new TypeReference<>() {
+                    }
+            );
+        } catch (final InvalidGameNameRestException | InvalidStatNameRestException | InvalidBoardNameException | InvalidLeaderboardCombinationRestException e) {
+            throw e;
+        } catch (final BaseRestException baseRestException) {
+            throw new UnknownApiException(baseRestException);
+        }
     }
 }

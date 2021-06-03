@@ -4,6 +4,7 @@ import de.timmi6790.mpstats.api.client.bedrock.BedrockMpStatsApiClient;
 import de.timmi6790.mpstats.api.client.common.filter.models.Reason;
 import de.timmi6790.mpstats.api.client.java.JavaMpStatsApiClient;
 import lombok.Getter;
+import lombok.SneakyThrows;
 
 import java.util.EnumSet;
 
@@ -20,13 +21,15 @@ public class MpStatsApiClient {
         this.javaClient = new JavaMpStatsApiClient(baseUrl, apiKey);
         this.bedrockClient = new BedrockMpStatsApiClient(baseUrl, apiKey);
     }
-    
+
+    @SneakyThrows
     public static void main(final String[] args) {
         final MpStatsApiClient apiClient = new MpStatsApiClient(null);
 
         System.out.println("------------ Game -----------------");
         System.out.println(apiClient.getJavaClient().getGameClient().getGames().size());
         System.out.println(apiClient.getJavaClient().getGameClient().getGame("Global"));
+        System.out.println(apiClient.getJavaClient().getGameClient().getGame("Globald"));
         System.out.println("------------------------------------");
 
         System.out.println("------------ Stat -----------------");

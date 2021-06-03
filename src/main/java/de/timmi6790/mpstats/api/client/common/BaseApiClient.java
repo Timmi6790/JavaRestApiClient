@@ -12,6 +12,7 @@ import de.timmi6790.mpstats.api.client.common.leaderboard.LeaderboardApiClient;
 import de.timmi6790.mpstats.api.client.common.player.PlayerApiClient;
 import de.timmi6790.mpstats.api.client.common.player.models.Player;
 import de.timmi6790.mpstats.api.client.common.stat.StatApiClient;
+import de.timmi6790.mpstats.api.client.exception.ExceptionHandler;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -19,6 +20,9 @@ import lombok.Getter;
 public class BaseApiClient<P extends Player> {
     @Getter(AccessLevel.PROTECTED)
     private final ObjectMapper objectMapper;
+
+    @Getter(AccessLevel.PROTECTED)
+    private final ExceptionHandler exceptionHandler;
 
     private final BoardApiClient boardClient;
     private final FilterApiClient<P> filterClient;
@@ -34,12 +38,14 @@ public class BaseApiClient<P extends Player> {
                 .addModule(new AfterburnerModule())
                 .build();
 
-        this.boardClient = new BoardApiClient(baseUrl, apiKey, schema, this.objectMapper);
-        this.filterClient = new FilterApiClient<>(baseUrl, apiKey, schema, this.objectMapper, playerClass);
-        this.gameClient = new GameApiClient(baseUrl, apiKey, schema, this.objectMapper);
-        this.groupClient = new GroupApiClient(baseUrl, apiKey, schema, this.objectMapper);
-        this.leaderboardClient = new LeaderboardApiClient<>(baseUrl, apiKey, schema, this.objectMapper, playerClass);
-        this.playerClient = new PlayerApiClient<>(baseUrl, apiKey, schema, this.objectMapper, playerClass);
-        this.statClient = new StatApiClient(baseUrl, apiKey, schema, this.objectMapper);
+        this.exceptionHandler = new ExceptionHandler(this.objectMapper);
+
+        this.boardClient = new BoardApiClient(baseUrl, apiKey, schema, this.objectMapper, this.exceptionHandler);
+        this.filterClient = new FilterApiClient<>(baseUrl, apiKey, schema, this.objectMapper, this.exceptionHandler, playerClass);
+        this.gameClient = new GameApiClient(baseUrl, apiKey, schema, this.objectMapper, this.exceptionHandler);
+        this.groupClient = new GroupApiClient(baseUrl, apiKey, schema, this.objectMapper, this.exceptionHandler);
+        this.leaderboardClient = new LeaderboardApiClient<>(baseUrl, apiKey, schema, this.objectMapper, this.exceptionHandler, playerClass);
+        this.playerClient = new PlayerApiClient<>(baseUrl, apiKey, schema, this.objectMapper, this.exceptionHandler, playerClass);
+        this.statClient = new StatApiClient(baseUrl, apiKey, schema, this.objectMapper, this.exceptionHandler);
     }
 }

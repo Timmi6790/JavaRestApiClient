@@ -9,6 +9,7 @@ import de.timmi6790.mpstats.api.client.common.filter.deserializers.FilterDeseria
 import de.timmi6790.mpstats.api.client.common.filter.models.Filter;
 import de.timmi6790.mpstats.api.client.common.filter.models.Reason;
 import de.timmi6790.mpstats.api.client.common.player.models.Player;
+import de.timmi6790.mpstats.api.client.exception.ExceptionHandler;
 import okhttp3.HttpUrl;
 
 import java.time.ZonedDateTime;
@@ -23,8 +24,9 @@ public class FilterApiClient<P extends Player> extends AbstractApiClient {
                            final String apiKey,
                            final String schema,
                            final ObjectMapper objectMapper,
+                           final ExceptionHandler exceptionHandler,
                            final Class<P> playerClass) {
-        super(baseUrl, apiKey, schema, objectMapper);
+        super(baseUrl, apiKey, schema, objectMapper, exceptionHandler);
 
         this.playerClass = playerClass;
 
