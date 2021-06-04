@@ -89,9 +89,11 @@ public class PlayerApiClient<P extends Player> extends AbstractApiClient {
             httpBuilder.addQueryParameter("filterReasons", reason.toString());
         }
         try {
-            return this.getGetResponseThrow(
-                    httpBuilder.build(),
-                    this.getPlayerStatsType()
+            return Optional.ofNullable(
+                    this.getGetResponseThrow(
+                            httpBuilder.build(),
+                            this.getPlayerStatsType()
+                    )
             );
         } catch (final InvalidGameNameRestException | InvalidStatNameRestException | InvalidBoardNameException | InvalidLeaderboardCombinationRestException | InvalidPlayerNameRestException e) {
             throw e;
@@ -125,9 +127,11 @@ public class PlayerApiClient<P extends Player> extends AbstractApiClient {
             httpBuilder.addQueryParameter("filterReasons", reason.toString());
         }
         try {
-            return this.getGetResponseThrow(
-                    httpBuilder.build(),
-                    this.getPlayerStatsType()
+            return Optional.ofNullable(
+                    this.getGetResponseThrow(
+                            httpBuilder.build(),
+                            this.getPlayerStatsType()
+                    )
             );
         } catch (final InvalidGameNameRestException | InvalidStatNameRestException | InvalidBoardNameException | InvalidLeaderboardCombinationRestException | InvalidPlayerNameRestException e) {
             throw e;
