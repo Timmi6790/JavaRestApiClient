@@ -2,11 +2,15 @@ package de.timmi6790.mpstats.api.client;
 
 import de.timmi6790.mpstats.api.client.bedrock.BedrockMpStatsApiClient;
 import de.timmi6790.mpstats.api.client.common.filter.models.Reason;
+import de.timmi6790.mpstats.api.client.common.player.models.PlayerEntry;
+import de.timmi6790.mpstats.api.client.common.player.models.PlayerStats;
 import de.timmi6790.mpstats.api.client.java.JavaMpStatsApiClient;
+import de.timmi6790.mpstats.api.client.java.player.models.JavaPlayer;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
 import java.util.EnumSet;
+import java.util.Optional;
 
 @Getter
 public class MpStatsApiClient {
@@ -27,13 +31,12 @@ public class MpStatsApiClient {
         final MpStatsApiClient apiClient = new MpStatsApiClient(null);
 
         System.out.println("------------ Bedrock PlayerStats -----------------");
-        System.out.println(apiClient.getBedrockClient().getPlayerClient().getPlayerStats("usniic", EnumSet.noneOf(Reason.class)));
+        System.out.println(apiClient.getBedrockClient().getPlayerClient().getPlayerStats("usniic", false, EnumSet.noneOf(Reason.class)));
         System.out.println("------------------------------------");
 
         System.out.println("------------ Game -----------------");
         System.out.println(apiClient.getJavaClient().getGameClient().getGames().size());
         System.out.println(apiClient.getJavaClient().getGameClient().getGame("Global"));
-        System.out.println(apiClient.getJavaClient().getGameClient().getGame("Globald"));
         System.out.println("------------------------------------");
 
         System.out.println("------------ Stat -----------------");
@@ -54,11 +57,24 @@ public class MpStatsApiClient {
 
         System.out.println("------------ PlayerStats -----------------");
         System.out.println(apiClient.getJavaClient().getPlayerClient().getPlayerGameStats(
-                "nwang888",
-                "Global",
+                "Timmi6790",
+                "SSM2",
                 "All",
+                false,
                 EnumSet.noneOf(Reason.class)
         ));
+
+        final Optional<PlayerStats<JavaPlayer>> d = apiClient.getJavaClient().getPlayerClient().getPlayerGameStats(
+                "Timmi6790",
+                "SSM2",
+                "All",
+                false,
+                EnumSet.noneOf(Reason.class)
+        );
+
+        for (final PlayerEntry entry : d.get().getStats()) {
+            System.out.println(entry.getLeaderboard().getStat());
+        }
         System.out.println("------------------------------------");
     }
 }

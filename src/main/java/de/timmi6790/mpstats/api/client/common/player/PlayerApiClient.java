@@ -64,7 +64,13 @@ public class PlayerApiClient<P extends Player> extends AbstractApiClient {
         return this.getObjectMapper().getTypeFactory().constructParametricType(PlayerStats.class, this.playerClass);
     }
 
-    protected Optional<PlayerStats<P>> getPlayerStats(final HttpUrl.Builder httpBuilder, final Set<Reason> filterReasons) throws InvalidGameNameRestException, InvalidStatNameRestException, InvalidPlayerNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
+    protected Optional<PlayerStats<P>> getPlayerStats(final HttpUrl.Builder httpBuilder,
+                                                      final boolean includeEmptyEntries,
+                                                      final ZonedDateTime saveTime,
+                                                      final Set<Reason> filterReasons) throws InvalidGameNameRestException, InvalidStatNameRestException, InvalidPlayerNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
+        httpBuilder
+                .addQueryParameter("includeEmptyEntries", String.valueOf(includeEmptyEntries))
+                .addQueryParameter("saveTime", saveTime.toString());
         this.addFilterReasons(httpBuilder, filterReasons);
         try {
             return Optional.ofNullable(
@@ -83,11 +89,13 @@ public class PlayerApiClient<P extends Player> extends AbstractApiClient {
     public Optional<PlayerStats<P>> getPlayerGameStats(final String playerName,
                                                        final String gameName,
                                                        final String boardName,
+                                                       final boolean includeEmptyEntries,
                                                        final Set<Reason> filterReasons) throws InvalidGameNameRestException, InvalidPlayerNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
         return this.getPlayerGameStats(
                 playerName,
                 gameName,
                 boardName,
+                includeEmptyEntries,
                 ZonedDateTime.now(),
                 filterReasons
         );
@@ -96,13 +104,13 @@ public class PlayerApiClient<P extends Player> extends AbstractApiClient {
     public Optional<PlayerStats<P>> getPlayerGameStats(final String playerName,
                                                        final String gameName,
                                                        final String boardName,
+                                                       final boolean includeEmptyEntries,
                                                        final ZonedDateTime saveTime,
                                                        final Set<Reason> filterReasons) throws InvalidGameNameRestException, InvalidPlayerNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
         final HttpUrl.Builder httpBuilder = HttpUrl.parse(this.getPlayerBaseUrl() + "/" + playerName + "/stats/game/" + gameName + "/" + boardName)
-                .newBuilder()
-                .addQueryParameter("saveTime", saveTime.toString());
+                .newBuilder();
         try {
-            return this.getPlayerStats(httpBuilder, filterReasons);
+            return this.getPlayerStats(httpBuilder, includeEmptyEntries, saveTime, filterReasons);
         } catch (final InvalidStatNameRestException exception) {
             // Should never be thrown
             throw new UnknownApiException(exception);
@@ -112,11 +120,13 @@ public class PlayerApiClient<P extends Player> extends AbstractApiClient {
     public Optional<PlayerStats<P>> getPlayerStatStats(final String playerName,
                                                        final String statName,
                                                        final String boardName,
+                                                       final boolean includeEmptyEntries,
                                                        final Set<Reason> filterReasons) throws InvalidStatNameRestException, InvalidPlayerNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
         return this.getPlayerStatStats(
                 playerName,
                 statName,
                 boardName,
+                includeEmptyEntries,
                 ZonedDateTime.now(),
                 filterReasons
         );
@@ -125,13 +135,13 @@ public class PlayerApiClient<P extends Player> extends AbstractApiClient {
     public Optional<PlayerStats<P>> getPlayerStatStats(final String playerName,
                                                        final String statName,
                                                        final String boardName,
+                                                       final boolean includeEmptyEntries,
                                                        final ZonedDateTime saveTime,
                                                        final Set<Reason> filterReasons) throws InvalidStatNameRestException, InvalidPlayerNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
         final HttpUrl.Builder httpBuilder = HttpUrl.parse(this.getPlayerBaseUrl() + "/" + playerName + "/stats/stat/" + statName + "/" + boardName)
-                .newBuilder()
-                .addQueryParameter("saveTime", saveTime.toString());
+                .newBuilder();
         try {
-            return this.getPlayerStats(httpBuilder, filterReasons);
+            return this.getPlayerStats(httpBuilder, includeEmptyEntries, saveTime, filterReasons);
         } catch (final InvalidGameNameRestException exception) {
             // Should never be thrown
             throw new UnknownApiException(exception);

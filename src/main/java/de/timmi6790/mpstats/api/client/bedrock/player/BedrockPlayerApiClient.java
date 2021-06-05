@@ -2,11 +2,14 @@ package de.timmi6790.mpstats.api.client.bedrock.player;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.timmi6790.mpstats.api.client.bedrock.player.models.BedrockPlayer;
+import de.timmi6790.mpstats.api.client.common.board.exceptions.InvalidBoardNameException;
 import de.timmi6790.mpstats.api.client.common.filter.models.Reason;
+import de.timmi6790.mpstats.api.client.common.game.exceptions.InvalidGameNameRestException;
+import de.timmi6790.mpstats.api.client.common.leaderboard.exceptions.InvalidLeaderboardCombinationRestException;
 import de.timmi6790.mpstats.api.client.common.player.PlayerApiClient;
 import de.timmi6790.mpstats.api.client.common.player.exceptions.InvalidPlayerNameRestException;
 import de.timmi6790.mpstats.api.client.common.player.models.PlayerStats;
-import de.timmi6790.mpstats.api.client.exception.BaseRestException;
+import de.timmi6790.mpstats.api.client.common.stat.exceptions.InvalidStatNameRestException;
 import de.timmi6790.mpstats.api.client.exception.ExceptionHandler;
 import de.timmi6790.mpstats.api.client.exception.exceptions.UnknownApiException;
 import okhttp3.HttpUrl;
@@ -24,32 +27,27 @@ public class BedrockPlayerApiClient extends PlayerApiClient<BedrockPlayer> {
     }
 
     public Optional<PlayerStats<BedrockPlayer>> getPlayerStats(final String playerName,
+                                                               final boolean includeEmptyEntries,
                                                                final Set<Reason> filterReasons) throws InvalidPlayerNameRestException {
         return this.getPlayerStats(
                 playerName,
+                includeEmptyEntries,
                 ZonedDateTime.now(),
                 filterReasons
         );
     }
 
     public Optional<PlayerStats<BedrockPlayer>> getPlayerStats(final String playerName,
+                                                               final boolean includeEmptyEntries,
                                                                final ZonedDateTime saveTime,
                                                                final Set<Reason> filterReasons) throws InvalidPlayerNameRestException {
         final HttpUrl.Builder httpBuilder = HttpUrl.parse(this.getPlayerBaseUrl() + "/" + playerName + "/stats/game")
-                .newBuilder()
-                .addQueryParameter("saveTime", saveTime.toString());
-        this.addFilterReasons(httpBuilder, filterReasons);
+                .newBuilder();
         try {
-            return Optional.ofNullable(
-                    this.getGetResponseThrow(
-                            httpBuilder.build(),
-                            this.getPlayerStatsType()
-                    )
-            );
-        } catch (final InvalidPlayerNameRestException e) {
-            throw e;
-        } catch (final BaseRestException baseRestException) {
-            throw new UnknownApiException(baseRestException);
+            return this.getPlayerStats(httpBuilder, includeEmptyEntries, saveTime, filterReasons);
+        } catch (final InvalidStatNameRestException | InvalidGameNameRestException | InvalidLeaderboardCombinationRestException | InvalidBoardNameException exception) {
+            // Should never be thrown
+            throw new UnknownApiException(exception);
         }
     }
 }
