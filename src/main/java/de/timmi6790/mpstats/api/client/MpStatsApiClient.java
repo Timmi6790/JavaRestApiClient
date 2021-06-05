@@ -26,6 +26,10 @@ public class MpStatsApiClient {
     public static void main(final String[] args) {
         final MpStatsApiClient apiClient = new MpStatsApiClient(null);
 
+        System.out.println("------------ Bedrock PlayerStats -----------------");
+        System.out.println(apiClient.getBedrockClient().getPlayerClient().getPlayerStats("usniic", EnumSet.noneOf(Reason.class)));
+        System.out.println("------------------------------------");
+
         System.out.println("------------ Game -----------------");
         System.out.println(apiClient.getJavaClient().getGameClient().getGames().size());
         System.out.println(apiClient.getJavaClient().getGameClient().getGame("Global"));

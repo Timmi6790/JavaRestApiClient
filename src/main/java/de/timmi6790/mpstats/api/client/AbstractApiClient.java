@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.timmi6790.mpstats.api.client.common.filter.models.Reason;
 import de.timmi6790.mpstats.api.client.exception.BaseRestException;
 import de.timmi6790.mpstats.api.client.exception.ExceptionHandler;
 import de.timmi6790.mpstats.api.client.exception.exceptions.ApiOfflineException;
@@ -24,6 +25,7 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.time.ZonedDateTime;
 import java.util.Optional;
+import java.util.Set;
 
 public abstract class AbstractApiClient {
     @Getter(AccessLevel.PROTECTED)
@@ -91,6 +93,12 @@ public abstract class AbstractApiClient {
 
     protected String getBaseSchemaUrl() {
         return this.baseUrl + "/v1/" + this.schema;
+    }
+
+    protected void addFilterReasons(final HttpUrl.Builder httpBuilder, final Set<Reason> filterReasons) {
+        for (final Reason reason : filterReasons) {
+            httpBuilder.addQueryParameter("filterReasons", reason.toString());
+        }
     }
 
     protected Request constructGetRequest(final HttpUrl httpUrl) {

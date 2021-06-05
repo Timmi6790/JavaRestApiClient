@@ -64,6 +64,22 @@ public class PlayerApiClient<P extends Player> extends AbstractApiClient {
         return this.getObjectMapper().getTypeFactory().constructParametricType(PlayerStats.class, this.playerClass);
     }
 
+    protected Optional<PlayerStats<P>> getPlayerStats(final HttpUrl.Builder httpBuilder, final Set<Reason> filterReasons) throws InvalidGameNameRestException, InvalidStatNameRestException, InvalidPlayerNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
+        this.addFilterReasons(httpBuilder, filterReasons);
+        try {
+            return Optional.ofNullable(
+                    this.getGetResponseThrow(
+                            httpBuilder.build(),
+                            this.getPlayerStatsType()
+                    )
+            );
+        } catch (final InvalidGameNameRestException | InvalidStatNameRestException | InvalidBoardNameException | InvalidLeaderboardCombinationRestException | InvalidPlayerNameRestException e) {
+            throw e;
+        } catch (final BaseRestException baseRestException) {
+            throw new UnknownApiException(baseRestException);
+        }
+    }
+
     public Optional<PlayerStats<P>> getPlayerGameStats(final String playerName,
                                                        final String gameName,
                                                        final String boardName,
@@ -85,21 +101,7 @@ public class PlayerApiClient<P extends Player> extends AbstractApiClient {
         final HttpUrl.Builder httpBuilder = HttpUrl.parse(this.getPlayerBaseUrl() + "/" + playerName + "/stats/game/" + gameName + "/" + boardName)
                 .newBuilder()
                 .addQueryParameter("saveTime", saveTime.toString());
-        for (final Reason reason : filterReasons) {
-            httpBuilder.addQueryParameter("filterReasons", reason.toString());
-        }
-        try {
-            return Optional.ofNullable(
-                    this.getGetResponseThrow(
-                            httpBuilder.build(),
-                            this.getPlayerStatsType()
-                    )
-            );
-        } catch (final InvalidGameNameRestException | InvalidStatNameRestException | InvalidBoardNameException | InvalidLeaderboardCombinationRestException | InvalidPlayerNameRestException e) {
-            throw e;
-        } catch (final BaseRestException baseRestException) {
-            throw new UnknownApiException(baseRestException);
-        }
+        return this.getPlayerStats(httpBuilder, filterReasons);
     }
 
     public Optional<PlayerStats<P>> getPlayerStatStats(final String playerName,
@@ -123,20 +125,6 @@ public class PlayerApiClient<P extends Player> extends AbstractApiClient {
         final HttpUrl.Builder httpBuilder = HttpUrl.parse(this.getPlayerBaseUrl() + "/" + playerName + "/stats/stat/" + statName + "/" + boardName)
                 .newBuilder()
                 .addQueryParameter("saveTime", saveTime.toString());
-        for (final Reason reason : filterReasons) {
-            httpBuilder.addQueryParameter("filterReasons", reason.toString());
-        }
-        try {
-            return Optional.ofNullable(
-                    this.getGetResponseThrow(
-                            httpBuilder.build(),
-                            this.getPlayerStatsType()
-                    )
-            );
-        } catch (final InvalidGameNameRestException | InvalidStatNameRestException | InvalidBoardNameException | InvalidLeaderboardCombinationRestException | InvalidPlayerNameRestException e) {
-            throw e;
-        } catch (final BaseRestException baseRestException) {
-            throw new UnknownApiException(baseRestException);
-        }
+        return this.getPlayerStats(httpBuilder, filterReasons);
     }
 }

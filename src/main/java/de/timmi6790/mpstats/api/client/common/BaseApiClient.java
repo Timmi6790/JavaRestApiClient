@@ -23,6 +23,8 @@ public class BaseApiClient<P extends Player> {
 
     @Getter(AccessLevel.PROTECTED)
     private final ExceptionHandler exceptionHandler;
+    @Getter(AccessLevel.PROTECTED)
+    private final String schema;
 
     private final BoardApiClient boardClient;
     private final FilterApiClient<P> filterClient;
@@ -33,6 +35,8 @@ public class BaseApiClient<P extends Player> {
     private final StatApiClient statClient;
 
     public BaseApiClient(final String baseUrl, final String apiKey, final String schema, final Class<P> playerClass) {
+        this.schema = schema;
+
         this.objectMapper = JsonMapper.builder()
                 .addModule(new Jdk8Module())
                 .addModule(new AfterburnerModule())
