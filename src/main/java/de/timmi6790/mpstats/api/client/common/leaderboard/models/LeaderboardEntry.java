@@ -11,4 +11,8 @@ import lombok.NoArgsConstructor;
 public class LeaderboardEntry<P extends Player> {
     private final P player;
     private final long score;
+
+    public boolean hasScore() {
+        return this.score != -1;
+    }
 }

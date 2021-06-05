@@ -22,4 +22,8 @@ public class LeaderboardPositionEntry<P extends Player> extends LeaderboardEntry
 
         this.position = position;
     }
+
+    public boolean hasPosition() {
+        return this.position != -1;
+    }
 }
