@@ -11,6 +11,7 @@ import lombok.SneakyThrows;
 
 import java.util.EnumSet;
 import java.util.Optional;
+import java.util.UUID;
 
 @Getter
 public class MpStatsApiClient {
@@ -61,6 +62,20 @@ public class MpStatsApiClient {
         System.out.println(apiClient.getJavaClient().getPlayerClient().getPlayerGameStats(
                 "Timmi6790",
                 "SSM2",
+                "All",
+                false,
+                EnumSet.noneOf(Reason.class)
+        ));
+        System.out.println(apiClient.getJavaClient().getPlayerClient().getPlayerGameStats(
+                UUID.fromString("9d59daad-6f62-4bd9-b13e-c961bf906750"),
+                "SSM2",
+                "All",
+                false,
+                EnumSet.noneOf(Reason.class)
+        ));
+        System.out.println(apiClient.getJavaClient().getPlayerClient().getPlayerStatStats(
+                UUID.fromString("9d59daad-6f62-4bd9-b13e-c961bf906750"),
+                "Wins",
                 "All",
                 false,
                 EnumSet.noneOf(Reason.class)
