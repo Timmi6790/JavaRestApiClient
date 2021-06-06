@@ -51,6 +51,8 @@ public class MpStatsApiClient {
 
         System.out.println("------------ Leaderboard -----------------");
         System.out.println(apiClient.getJavaClient().getLeaderboardClient().getLeaderboards().size());
+        System.out.println(apiClient.getJavaClient().getLeaderboardClient().getLeaderboards("Global"));
+        System.out.println(apiClient.getJavaClient().getLeaderboardClient().getLeaderboards("Global", "ExpEarned"));
         System.out.println(apiClient.getJavaClient().getLeaderboardClient().getLeaderboard("Global", "ExpEarned", "All"));
         System.out.println(apiClient.getJavaClient().getLeaderboardClient().getLeaderboardSave("Global", "ExpEarned", "All", EnumSet.noneOf(Reason.class)).isPresent());
         System.out.println("------------------------------------");

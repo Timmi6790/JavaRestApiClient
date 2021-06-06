@@ -65,6 +65,36 @@ public class LeaderboardApiClient<P extends Player> extends AbstractApiClient {
         ).orElseGet(ArrayList::new);
     }
 
+    public List<Leaderboard> getLeaderboards(final String gameName) throws InvalidGameNameRestException {
+        final HttpUrl url = HttpUrl.parse(this.getLeaderboardBaseUrl() + "/" + gameName);
+        try {
+            return this.getGetResponseThrow(
+                    url,
+                    new TypeReference<>() {
+                    }
+            );
+        } catch (final InvalidGameNameRestException e) {
+            throw e;
+        } catch (final BaseRestException baseRestException) {
+            throw new UnknownApiException(baseRestException);
+        }
+    }
+
+    public List<Leaderboard> getLeaderboards(final String gameName, final String statName) throws InvalidGameNameRestException, InvalidStatNameRestException {
+        final HttpUrl url = HttpUrl.parse(this.getLeaderboardBaseUrl() + "/" + gameName + "/" + statName);
+        try {
+            return this.getGetResponseThrow(
+                    url,
+                    new TypeReference<>() {
+                    }
+            );
+        } catch (final InvalidGameNameRestException | InvalidStatNameRestException e) {
+            throw e;
+        } catch (final BaseRestException baseRestException) {
+            throw new UnknownApiException(baseRestException);
+        }
+    }
+
     public Leaderboard getLeaderboard(final String gameName,
                                       final String statName,
                                       final String boardName) throws InvalidGameNameRestException, InvalidStatNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
