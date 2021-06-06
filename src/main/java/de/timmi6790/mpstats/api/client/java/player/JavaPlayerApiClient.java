@@ -32,7 +32,7 @@ public class JavaPlayerApiClient extends PlayerApiClient<JavaPlayer> {
                                                                 final String gameName,
                                                                 final String boardName,
                                                                 final boolean includeEmptyEntries,
-                                                                final Set<Reason> filterReasons) throws InvalidGameNameRestException, InvalidPlayerNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
+                                                                final Set<Reason> filterReasons) throws InvalidGameNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
         return this.getPlayerGameStats(
                 playerUUID,
                 gameName,
@@ -48,12 +48,12 @@ public class JavaPlayerApiClient extends PlayerApiClient<JavaPlayer> {
                                                                           final String boardName,
                                                                           final boolean includeEmptyEntries,
                                                                           final ZonedDateTime saveTime,
-                                                                          final Set<Reason> filterReasons) throws InvalidGameNameRestException, InvalidPlayerNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
+                                                                          final Set<Reason> filterReasons) throws InvalidGameNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
         final HttpUrl.Builder httpBuilder = HttpUrl.parse(this.getPlayerBaseUrl() + "/uuid/" + playerUUID.toString() + "/stats/game/" + gameName + "/" + boardName)
                 .newBuilder();
         try {
             return this.getPlayerStats(httpBuilder, includeEmptyEntries, saveTime, filterReasons);
-        } catch (final InvalidStatNameRestException exception) {
+        } catch (final InvalidStatNameRestException | InvalidPlayerNameRestException exception) {
             // Should never be thrown
             throw new UnknownApiException(exception);
         }
@@ -63,7 +63,7 @@ public class JavaPlayerApiClient extends PlayerApiClient<JavaPlayer> {
                                                                 final String statName,
                                                                 final String boardName,
                                                                 final boolean includeEmptyEntries,
-                                                                final Set<Reason> filterReasons) throws InvalidStatNameRestException, InvalidPlayerNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
+                                                                final Set<Reason> filterReasons) throws InvalidStatNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
         return this.getPlayerStatStats(
                 playerUUID,
                 statName,
@@ -79,12 +79,12 @@ public class JavaPlayerApiClient extends PlayerApiClient<JavaPlayer> {
                                                                 final String boardName,
                                                                 final boolean includeEmptyEntries,
                                                                 final ZonedDateTime saveTime,
-                                                                final Set<Reason> filterReasons) throws InvalidStatNameRestException, InvalidPlayerNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
+                                                                final Set<Reason> filterReasons) throws InvalidStatNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
         final HttpUrl.Builder httpBuilder = HttpUrl.parse(this.getPlayerBaseUrl() + "/uuid/" + playerUUID.toString() + "/stats/stat/" + statName + "/" + boardName)
                 .newBuilder();
         try {
             return this.getPlayerStats(httpBuilder, includeEmptyEntries, saveTime, filterReasons);
-        } catch (final InvalidGameNameRestException exception) {
+        } catch (final InvalidGameNameRestException | InvalidPlayerNameRestException exception) {
             // Should never be thrown
             throw new UnknownApiException(exception);
         }
