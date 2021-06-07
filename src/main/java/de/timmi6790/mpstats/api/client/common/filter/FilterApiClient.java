@@ -47,8 +47,8 @@ public class FilterApiClient<P extends Player> extends AbstractApiClient {
 
     public List<Filter<P>> getFilters() {
         final HttpUrl url = HttpUrl.parse(this.getFilterBaseUrl());
-        return this.getGetResponse(
-                url,
+        return this.getResponse(
+                this.constructGetRequest(url),
                 new TypeReference<List<Filter<P>>>() {
                 }
         ).orElseGet(ArrayList::new);

@@ -39,8 +39,8 @@ public class BoardApiClient extends AbstractApiClient {
 
     public List<Board> getBoards() {
         final HttpUrl url = HttpUrl.parse(this.getBoardBaseUrl());
-        return this.getGetResponse(
-                url,
+        return this.getResponse(
+                this.constructGetRequest(url),
                 new TypeReference<List<Board>>() {
                 }
         ).orElseGet(ArrayList::new);
@@ -49,8 +49,8 @@ public class BoardApiClient extends AbstractApiClient {
     public Board getBoard(final String boardName) throws InvalidBoardNameException {
         final HttpUrl url = HttpUrl.parse(this.getBoardBaseUrl() + "/" + boardName);
         try {
-            return this.getGetResponseThrow(
-                    url,
+            return this.getResponseThrow(
+                    this.constructGetRequest(url),
                     Board.class
             );
         } catch (final InvalidBoardNameException e) {

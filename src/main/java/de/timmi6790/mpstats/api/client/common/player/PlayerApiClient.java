@@ -74,8 +74,8 @@ public class PlayerApiClient<P extends Player> extends AbstractApiClient {
         this.addFilterReasons(httpBuilder, filterReasons);
         try {
             return Optional.ofNullable(
-                    this.getGetResponseThrow(
-                            httpBuilder.build(),
+                    this.getResponseThrow(
+                            this.constructGetRequest(httpBuilder.build()),
                             this.getPlayerStatsType()
                     )
             );

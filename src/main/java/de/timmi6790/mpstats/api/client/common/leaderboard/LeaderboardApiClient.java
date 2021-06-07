@@ -58,8 +58,8 @@ public class LeaderboardApiClient<P extends Player> extends AbstractApiClient {
 
     public List<Leaderboard> getLeaderboards() {
         final HttpUrl url = HttpUrl.parse(this.getLeaderboardBaseUrl());
-        return this.getGetResponse(
-                url,
+        return this.getResponse(
+                this.constructGetRequest(url),
                 new TypeReference<List<Leaderboard>>() {
                 }
         ).orElseGet(ArrayList::new);
@@ -68,8 +68,8 @@ public class LeaderboardApiClient<P extends Player> extends AbstractApiClient {
     public List<Leaderboard> getLeaderboards(final String gameName) throws InvalidGameNameRestException {
         final HttpUrl url = HttpUrl.parse(this.getLeaderboardBaseUrl() + "/" + gameName);
         try {
-            return this.getGetResponseThrow(
-                    url,
+            return this.getResponseThrow(
+                    this.constructGetRequest(url),
                     new TypeReference<>() {
                     }
             );
@@ -83,8 +83,8 @@ public class LeaderboardApiClient<P extends Player> extends AbstractApiClient {
     public List<Leaderboard> getLeaderboards(final String gameName, final String statName) throws InvalidGameNameRestException, InvalidStatNameRestException {
         final HttpUrl url = HttpUrl.parse(this.getLeaderboardBaseUrl() + "/" + gameName + "/" + statName);
         try {
-            return this.getGetResponseThrow(
-                    url,
+            return this.getResponseThrow(
+                    this.constructGetRequest(url),
                     new TypeReference<>() {
                     }
             );
@@ -100,8 +100,8 @@ public class LeaderboardApiClient<P extends Player> extends AbstractApiClient {
                                       final String boardName) throws InvalidGameNameRestException, InvalidStatNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
         final HttpUrl url = HttpUrl.parse(this.getLeaderboardBaseUrl() + "/" + gameName + "/" + statName + "/" + boardName);
         try {
-            return this.getGetResponseThrow(
-                    url,
+            return this.getResponseThrow(
+                    this.constructGetRequest(url),
                     Leaderboard.class
             );
         } catch (final InvalidGameNameRestException | InvalidStatNameRestException | InvalidBoardNameException | InvalidLeaderboardCombinationRestException e) {
@@ -124,8 +124,8 @@ public class LeaderboardApiClient<P extends Player> extends AbstractApiClient {
                                                        final String boardName) throws InvalidGameNameRestException, InvalidStatNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
         final HttpUrl url = HttpUrl.parse(this.getLeaderboardBaseUrl() + "/" + gameName + "/" + statName + "/" + boardName + "/saves");
         try {
-            return this.getGetResponseThrow(
-                    url,
+            return this.getResponseThrow(
+                    this.constructGetRequest(url),
                     new TypeReference<>() {
                     }
             );
@@ -151,12 +151,10 @@ public class LeaderboardApiClient<P extends Player> extends AbstractApiClient {
         final HttpUrl.Builder httpBuilder = HttpUrl.parse(this.getLeaderboardBaseUrl() + "/" + gameName + "/" + statName + "/" + boardName + "/save")
                 .newBuilder()
                 .addQueryParameter("saveTime", saveTime.toString());
-        for (final Reason reason : filterReasons) {
-            httpBuilder.addQueryParameter("filterReasons", reason.toString());
-        }
+        this.addFilterReasons(httpBuilder, filterReasons);
         try {
-            return this.getGetResponseThrow(
-                    httpBuilder.build(),
+            return this.getResponseThrow(
+                    this.constructGetRequest(httpBuilder.build()),
                     new TypeReference<>() {
                     }
             );

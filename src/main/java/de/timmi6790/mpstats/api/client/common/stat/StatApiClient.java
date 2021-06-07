@@ -39,8 +39,8 @@ public class StatApiClient extends AbstractApiClient {
 
     public List<Stat> getStats() {
         final HttpUrl url = HttpUrl.parse(this.getStatBaseUrl());
-        return this.getGetResponse(
-                url,
+        return this.getResponse(
+                this.constructGetRequest(url),
                 new TypeReference<List<Stat>>() {
                 }
         ).orElseGet(ArrayList::new);
@@ -49,8 +49,8 @@ public class StatApiClient extends AbstractApiClient {
     public Stat getStat(final String statName) throws InvalidStatNameRestException {
         final HttpUrl url = HttpUrl.parse(this.getStatBaseUrl() + "/" + statName);
         try {
-            return this.getGetResponseThrow(
-                    url,
+            return this.getResponseThrow(
+                    this.constructGetRequest(url),
                     Stat.class
             );
         } catch (final InvalidStatNameRestException e) {

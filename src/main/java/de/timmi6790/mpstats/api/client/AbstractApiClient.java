@@ -15,10 +15,7 @@ import de.timmi6790.mpstats.api.client.utilities.CheckedFunction;
 import de.timmi6790.mpstats.api.client.utilities.OkHttpClientUtilities;
 import lombok.AccessLevel;
 import lombok.Getter;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.*;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -101,39 +98,47 @@ public abstract class AbstractApiClient {
         }
     }
 
+    protected Request constructPostRequest(final HttpUrl httpUrl) {
+        return this.constructPostRequest(httpUrl, RequestBody.create("", null));
+    }
+
+    protected Request constructPostRequest(final HttpUrl httpUrl, final RequestBody requestBody) {
+        return new Request.Builder()
+                .url(httpUrl)
+                .post(requestBody)
+                .build();
+    }
+
     protected Request constructGetRequest(final HttpUrl httpUrl) {
         return new Request.Builder()
                 .url(httpUrl)
                 .build();
     }
 
-    protected <T> Optional<T> getGetResponse(final HttpUrl url, final Class<T> clazz) {
-        final Request request = this.constructGetRequest(url);
-        return this.parserRequest(
+    protected <T> Optional<T> getResponse(final Request request, final Class<T> clazz) {
+        return this.parseRequest(
                 request,
                 bytes -> this.objectMapper.readValue(bytes, clazz)
         );
     }
 
-    protected <T> Optional<T> getGetResponse(final HttpUrl url, final TypeReference<T> typeToken) {
-        final Request request = this.constructGetRequest(url);
-        return this.parserRequest(
+    protected <T> Optional<T> getResponse(final Request request, final TypeReference<T> typeToken) {
+        return this.parseRequest(
                 request,
                 bytes -> this.objectMapper.readValue(bytes, typeToken)
         );
     }
 
-    protected <T> Optional<T> getGetResponse(final HttpUrl url, final JavaType javaType) {
-        final Request request = this.constructGetRequest(url);
-        return this.parserRequest(
+    protected <T> Optional<T> getResponse(final Request request, final JavaType javaType) {
+        return this.parseRequest(
                 request,
                 bytes -> this.objectMapper.readValue(bytes, javaType)
         );
     }
 
-    protected <T> Optional<T> parserRequest(final Request request, final CheckedFunction<byte[], T> converterFunction) {
+    protected <T> Optional<T> parseRequest(final Request request, final CheckedFunction<byte[], T> converterFunction) {
         try {
-            return Optional.ofNullable(this.parserRequestThrow(request, converterFunction));
+            return Optional.ofNullable(this.parseRequestThrow(request, converterFunction));
         } catch (final InvalidApiKeyException | RateLimitException | ApiOfflineException exception) {
             throw exception;
         } catch (final Exception exception) {
@@ -141,31 +146,28 @@ public abstract class AbstractApiClient {
         }
     }
 
-    protected <T> T getGetResponseThrow(final HttpUrl url, final Class<T> clazz) throws BaseRestException {
-        final Request request = this.constructGetRequest(url);
-        return this.parserRequestThrow(
+    protected <T> T getResponseThrow(final Request request, final Class<T> clazz) throws BaseRestException {
+        return this.parseRequestThrow(
                 request,
                 bytes -> this.objectMapper.readValue(bytes, clazz)
         );
     }
 
-    protected <T> T getGetResponseThrow(final HttpUrl url, final TypeReference<T> typeToken) throws BaseRestException {
-        final Request request = this.constructGetRequest(url);
-        return this.parserRequestThrow(
+    protected <T> T getResponseThrow(final Request request, final TypeReference<T> typeToken) throws BaseRestException {
+        return this.parseRequestThrow(
                 request,
                 bytes -> this.objectMapper.readValue(bytes, typeToken)
         );
     }
 
-    protected <T> T getGetResponseThrow(final HttpUrl url, final JavaType javaType) throws BaseRestException {
-        final Request request = this.constructGetRequest(url);
-        return this.parserRequestThrow(
+    protected <T> T getResponseThrow(final Request request, final JavaType javaType) throws BaseRestException {
+        return this.parseRequestThrow(
                 request,
                 bytes -> this.objectMapper.readValue(bytes, javaType)
         );
     }
 
-    protected <T> T parserRequestThrow(final Request request, final CheckedFunction<byte[], T> converterFunction) throws BaseRestException {
+    protected <T> T parseRequestThrow(final Request request, final CheckedFunction<byte[], T> converterFunction) throws BaseRestException {
         try (final Response response = this.httpClient.newCall(request).execute()) {
             return this.parseResponse(response, converterFunction);
         } catch (final SocketTimeoutException | ConnectException e) {

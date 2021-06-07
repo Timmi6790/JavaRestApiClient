@@ -50,8 +50,8 @@ public class GameApiClient extends AbstractApiClient {
 
     public List<Game> getGames() {
         final HttpUrl url = HttpUrl.parse(this.getGameBaseUrl());
-        return this.getGetResponse(
-                url,
+        return this.getResponse(
+                this.constructGetRequest(url),
                 new TypeReference<List<Game>>() {
                 }
         ).orElseGet(ArrayList::new);
@@ -61,8 +61,8 @@ public class GameApiClient extends AbstractApiClient {
         final HttpUrl url = HttpUrl.parse(this.getGameBaseUrl() + "/" + gameName);
 
         try {
-            return this.getGetResponseThrow(
-                    url,
+            return this.getResponseThrow(
+                    this.constructGetRequest(url),
                     Game.class
             );
         } catch (final InvalidGameNameRestException ex) {
@@ -81,8 +81,8 @@ public class GameApiClient extends AbstractApiClient {
 
     public List<GameCategory> getGameCategories() {
         final HttpUrl url = HttpUrl.parse(this.getGameCategoryBaseUrl());
-        return this.getGetResponse(
-                url,
+        return this.getResponse(
+                this.constructGetRequest(url),
                 new TypeReference<List<GameCategory>>() {
                 }
         ).orElseGet(ArrayList::new);
@@ -91,8 +91,8 @@ public class GameApiClient extends AbstractApiClient {
     public GameCategory getGameCategory(final String categoryName) throws InvalidGameCategoryNameRestException {
         final HttpUrl url = HttpUrl.parse(this.getGameCategoryBaseUrl() + "/" + categoryName);
         try {
-            return this.getGetResponseThrow(
-                    url,
+            return this.getResponseThrow(
+                    this.constructGetRequest(url),
                     GameCategory.class
             );
         } catch (final InvalidGameCategoryNameRestException e) {
