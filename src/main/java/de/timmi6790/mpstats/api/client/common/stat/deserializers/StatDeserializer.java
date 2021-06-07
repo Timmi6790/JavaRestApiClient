@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import de.timmi6790.mpstats.api.client.common.stat.models.Stat;
+import de.timmi6790.mpstats.api.client.common.stat.models.StatType;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -29,12 +30,23 @@ public class StatDeserializer extends StdDeserializer<Stat> {
             aliasNames.add(aliasNode.textValue());
         }
 
+        // StatType
+        final String typeName = node.get("type").textValue();
+        StatType type;
+        try {
+            type = StatType.valueOf(typeName);
+        } catch (final IllegalArgumentException e) {
+            type = StatType.getDefault();
+        }
+
         return new Stat(
                 node.get("statName").textValue(),
                 node.get("cleanName").textValue(),
                 node.get("description").textValue(),
                 node.get("achievement").asBoolean(),
-                aliasNames
+                aliasNames,
+                node.get("sortingPriority").intValue(),
+                type
         );
     }
 }
