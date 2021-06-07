@@ -9,6 +9,7 @@ import de.timmi6790.mpstats.api.client.java.player.models.JavaPlayer;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
+import java.time.ZonedDateTime;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.UUID;
@@ -29,10 +30,22 @@ public class MpStatsApiClient {
 
     @SneakyThrows
     public static void main(final String[] args) {
-        final MpStatsApiClient apiClient = new MpStatsApiClient(null);
+        final MpStatsApiClient apiClient = new MpStatsApiClient("42626cf4-ae01-4884-9e51-7ed962f0b81a");
 
         System.out.println("------------ Bedrock PlayerStats -----------------");
         System.out.println(apiClient.getBedrockClient().getPlayerClient().getPlayerStats("usniic", false, EnumSet.noneOf(Reason.class)));
+        System.out.println("------------------------------------");
+
+        System.out.println("------------ Filter -----------------");
+        System.out.println(apiClient.getJavaClient().getFilterClient().createFilter(
+                "Global",
+                "ExpEarned",
+                "All",
+                "DC_",
+                Reason.GLITCHED,
+                ZonedDateTime.now(),
+                ZonedDateTime.now().plusDays(9999)
+        ));
         System.out.println("------------------------------------");
 
         System.out.println("------------ Game -----------------");

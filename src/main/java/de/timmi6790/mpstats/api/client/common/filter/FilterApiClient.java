@@ -5,11 +5,18 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import de.timmi6790.mpstats.api.client.AbstractApiClient;
+import de.timmi6790.mpstats.api.client.common.board.exceptions.InvalidBoardNameException;
 import de.timmi6790.mpstats.api.client.common.filter.deserializers.FilterDeserializer;
 import de.timmi6790.mpstats.api.client.common.filter.models.Filter;
 import de.timmi6790.mpstats.api.client.common.filter.models.Reason;
+import de.timmi6790.mpstats.api.client.common.game.exceptions.InvalidGameNameRestException;
+import de.timmi6790.mpstats.api.client.common.leaderboard.exceptions.InvalidLeaderboardCombinationRestException;
+import de.timmi6790.mpstats.api.client.common.player.exceptions.InvalidPlayerNameRestException;
 import de.timmi6790.mpstats.api.client.common.player.models.Player;
+import de.timmi6790.mpstats.api.client.common.stat.exceptions.InvalidStatNameRestException;
+import de.timmi6790.mpstats.api.client.exception.BaseRestException;
 import de.timmi6790.mpstats.api.client.exception.ExceptionHandler;
+import de.timmi6790.mpstats.api.client.exception.exceptions.UnknownApiException;
 import okhttp3.HttpUrl;
 
 import java.time.ZonedDateTime;
@@ -60,10 +67,25 @@ public class FilterApiClient<P extends Player> extends AbstractApiClient {
                                             final String playerName,
                                             final Reason reason,
                                             final ZonedDateTime filterStart,
-                                            final ZonedDateTime filterEnd) {
-        // @PostMapping("/{gameName}/{statName}/{boardName}/{playerName}")
-        throw new UnsupportedOperationException();
-
+                                            final ZonedDateTime filterEnd) throws InvalidStatNameRestException, InvalidGameNameRestException, InvalidPlayerNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
+        final HttpUrl url = HttpUrl.parse(this.getFilterBaseUrl() + "/" + gameName + "/" + statName + "/" + boardName + "/" + playerName)
+                .newBuilder()
+                .addQueryParameter("reason", reason.toString())
+                .addQueryParameter("filterStart", filterStart.toString())
+                .addQueryParameter("filterEnd", filterEnd.toString())
+                .build();
+        try {
+            final Filter<P> filter = this.getResponseThrow(
+                    this.constructPostRequest(url),
+                    new TypeReference<>() {
+                    }
+            );
+            return Optional.ofNullable(filter);
+        } catch (final InvalidPlayerNameRestException | InvalidLeaderboardCombinationRestException | InvalidStatNameRestException | InvalidBoardNameException | InvalidGameNameRestException e) {
+            throw e;
+        } catch (final BaseRestException baseRestException) {
+            throw new UnknownApiException(baseRestException);
+        }
     }
 
     public void removeFilter(final String gameName,
