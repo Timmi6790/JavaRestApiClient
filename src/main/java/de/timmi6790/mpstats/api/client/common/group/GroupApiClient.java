@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import de.timmi6790.mpstats.api.client.AbstractApiClient;
 import de.timmi6790.mpstats.api.client.common.board.exceptions.InvalidBoardNameException;
 import de.timmi6790.mpstats.api.client.common.filter.models.Reason;
-import de.timmi6790.mpstats.api.client.common.game.exceptions.InvalidGameNameRestException;
 import de.timmi6790.mpstats.api.client.common.group.deserializers.GroupDeserializer;
 import de.timmi6790.mpstats.api.client.common.group.deserializers.InvalidGroupNameRestExceptionDeserializer;
 import de.timmi6790.mpstats.api.client.common.group.exceptions.InvalidGroupNameRestException;
@@ -58,7 +57,7 @@ public class GroupApiClient<P extends Player> extends AbstractApiClient {
     protected Optional<PlayerStats<P>> getPlayerStats(final HttpUrl httpUrl,
                                                       final ZonedDateTime saveTime,
                                                       final Set<Reason> filterReasons,
-                                                      final boolean includeEmptyEntries) throws InvalidGameNameRestException, InvalidStatNameRestException, InvalidPlayerNameRestException, InvalidBoardNameException {
+                                                      final boolean includeEmptyEntries) throws InvalidGroupNameRestException, InvalidStatNameRestException, InvalidPlayerNameRestException, InvalidBoardNameException {
         final HttpUrl.Builder httpBuilder = httpUrl.newBuilder();
         httpBuilder.addQueryParameter("includeEmptyEntries", String.valueOf(includeEmptyEntries))
                 .addQueryParameter("saveTime", saveTime.toString());
@@ -70,7 +69,7 @@ public class GroupApiClient<P extends Player> extends AbstractApiClient {
                             this.getPlayerStatsType()
                     )
             );
-        } catch (final InvalidGameNameRestException | InvalidStatNameRestException | InvalidBoardNameException | InvalidPlayerNameRestException e) {
+        } catch (final InvalidGroupNameRestException | InvalidStatNameRestException | InvalidBoardNameException | InvalidPlayerNameRestException e) {
             throw e;
         } catch (final BaseRestException baseRestException) {
             throw new UnknownApiException(baseRestException);
@@ -82,7 +81,7 @@ public class GroupApiClient<P extends Player> extends AbstractApiClient {
                                                    final String statName,
                                                    final String boardName,
                                                    final Set<Reason> filterReasons,
-                                                   final boolean includeEmptyEntries) throws InvalidGameNameRestException, InvalidPlayerNameRestException, InvalidStatNameRestException, InvalidBoardNameException {
+                                                   final boolean includeEmptyEntries) throws InvalidPlayerNameRestException, InvalidStatNameRestException, InvalidBoardNameException, InvalidGroupNameRestException {
         return this.getPlayerStats(
                 groupName,
                 playerName,
@@ -100,7 +99,7 @@ public class GroupApiClient<P extends Player> extends AbstractApiClient {
                                                    final String boardName,
                                                    final ZonedDateTime saveTime,
                                                    final Set<Reason> filterReasons,
-                                                   final boolean includeEmptyEntries) throws InvalidGameNameRestException, InvalidPlayerNameRestException, InvalidStatNameRestException, InvalidBoardNameException {
+                                                   final boolean includeEmptyEntries) throws InvalidPlayerNameRestException, InvalidStatNameRestException, InvalidBoardNameException, InvalidGroupNameRestException {
         final HttpUrl httpUrl = HttpUrl.parse(this.getGroupBaseUrl() + "/" + groupName + "/stat/player/" + playerName + "/" + statName + "/" + boardName);
         return this.getPlayerStats(
                 httpUrl,
