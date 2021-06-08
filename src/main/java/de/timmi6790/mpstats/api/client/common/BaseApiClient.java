@@ -29,7 +29,7 @@ public class BaseApiClient<P extends Player> {
     private final BoardApiClient boardClient;
     private final FilterApiClient<P> filterClient;
     private final GameApiClient gameClient;
-    private final GroupApiClient groupClient;
+    private final GroupApiClient<P> groupClient;
     private final LeaderboardApiClient<P> leaderboardClient;
     private final PlayerApiClient<P> playerClient;
     private final StatApiClient statClient;
@@ -47,7 +47,7 @@ public class BaseApiClient<P extends Player> {
         this.boardClient = new BoardApiClient(baseUrl, apiKey, schema, this.objectMapper, this.exceptionHandler);
         this.filterClient = new FilterApiClient<>(baseUrl, apiKey, schema, this.objectMapper, this.exceptionHandler, playerClass);
         this.gameClient = new GameApiClient(baseUrl, apiKey, schema, this.objectMapper, this.exceptionHandler);
-        this.groupClient = new GroupApiClient(baseUrl, apiKey, schema, this.objectMapper, this.exceptionHandler);
+        this.groupClient = new GroupApiClient<>(baseUrl, apiKey, schema, this.objectMapper, this.exceptionHandler, playerClass);
         this.leaderboardClient = new LeaderboardApiClient<>(baseUrl, apiKey, schema, this.objectMapper, this.exceptionHandler, playerClass);
         this.playerClient = new PlayerApiClient<>(baseUrl, apiKey, schema, this.objectMapper, this.exceptionHandler, playerClass);
         this.statClient = new StatApiClient(baseUrl, apiKey, schema, this.objectMapper, this.exceptionHandler);
