@@ -13,8 +13,8 @@ public class BedrockPlayerDeserializer extends StdDeserializer<BedrockPlayer> {
     @Serial
     private static final long serialVersionUID = 1972105464341747687L;
 
-    public BedrockPlayerDeserializer(final Class<?> vc) {
-        super(vc);
+    public BedrockPlayerDeserializer() {
+        super(BedrockPlayer.class);
     }
 
     @Override

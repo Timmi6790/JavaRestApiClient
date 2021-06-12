@@ -17,8 +17,8 @@ public class LeaderboardDeserializer extends StdDeserializer<Leaderboard> {
     @Serial
     private static final long serialVersionUID = -6501827219870099245L;
 
-    public LeaderboardDeserializer(final Class<Leaderboard> vc) {
-        super(vc);
+    public LeaderboardDeserializer() {
+        super(Leaderboard.class);
     }
 
     @Override

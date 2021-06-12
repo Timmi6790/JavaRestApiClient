@@ -15,8 +15,8 @@ public class PlayerEntryDeserializer extends StdDeserializer<PlayerEntry> {
     @Serial
     private static final long serialVersionUID = -5135974199630410038L;
 
-    public PlayerEntryDeserializer(final Class<PlayerEntry> vc) {
-        super(vc);
+    public PlayerEntryDeserializer() {
+        super(PlayerEntry.class);
     }
 
     @Override

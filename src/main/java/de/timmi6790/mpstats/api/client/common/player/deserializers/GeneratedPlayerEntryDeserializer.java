@@ -15,8 +15,8 @@ public class GeneratedPlayerEntryDeserializer extends StdDeserializer<GeneratedP
     @Serial
     private static final long serialVersionUID = 709303619461306042L;
 
-    public GeneratedPlayerEntryDeserializer(final Class<GeneratedPlayerEntry> vc) {
-        super(vc);
+    public GeneratedPlayerEntryDeserializer() {
+        super(GeneratedPlayerEntry.class);
     }
 
     @Override

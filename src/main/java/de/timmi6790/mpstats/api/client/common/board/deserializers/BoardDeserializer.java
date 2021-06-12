@@ -15,8 +15,8 @@ public class BoardDeserializer extends StdDeserializer<Board> {
     @Serial
     private static final long serialVersionUID = 6181652270917546525L;
 
-    public BoardDeserializer(final Class<Board> vc) {
-        super(vc);
+    public BoardDeserializer() {
+        super(Board.class);
     }
 
     @Override

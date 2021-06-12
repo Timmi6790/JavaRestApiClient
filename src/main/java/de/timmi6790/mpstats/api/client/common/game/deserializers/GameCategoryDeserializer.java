@@ -13,8 +13,8 @@ public class GameCategoryDeserializer extends StdDeserializer<GameCategory> {
     @Serial
     private static final long serialVersionUID = -8006135647788462738L;
 
-    public GameCategoryDeserializer(final Class<GameCategory> vc) {
-        super(vc);
+    public GameCategoryDeserializer() {
+        super(GameCategory.class);
     }
 
     @Override

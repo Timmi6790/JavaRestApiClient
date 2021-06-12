@@ -26,8 +26,8 @@ public class BoardApiClient extends AbstractApiClient {
 
         this.getObjectMapper().registerModule(
                 new SimpleModule()
-                        .addDeserializer(Board.class, new BoardDeserializer(Board.class))
-                        .addDeserializer(InvalidBoardNameException.class, new InvalidBoardNameExceptionDeserializer(InvalidBoardNameException.class))
+                        .addDeserializer(Board.class, new BoardDeserializer())
+                        .addDeserializer(InvalidBoardNameException.class, new InvalidBoardNameExceptionDeserializer())
         );
 
         exceptionHandler.registerException("board-1", InvalidBoardNameException.class);

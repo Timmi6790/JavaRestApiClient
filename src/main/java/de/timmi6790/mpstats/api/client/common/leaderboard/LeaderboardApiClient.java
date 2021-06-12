@@ -42,11 +42,11 @@ public class LeaderboardApiClient<P extends Player> extends AbstractApiClient {
 
         this.getObjectMapper().registerModule(
                 new SimpleModule()
-                        .addDeserializer(Leaderboard.class, new LeaderboardDeserializer(Leaderboard.class))
+                        .addDeserializer(Leaderboard.class, new LeaderboardDeserializer())
                         .addDeserializer(LeaderboardEntry.class, new LeaderboardEntryDeserializer<>(leaderboardEntryType, playerClass))
                         .addDeserializer(LeaderboardPositionEntry.class, new LeaderboardPositionEntryDeserializer<>(leaderboardPositionEntryType, leaderboardEntryType))
                         .addDeserializer(LeaderboardPositionSave.class, new LeaderboardPositionSaveDeserializer<>(leaderboardPositionSaveType, leaderboardPositionEntryType))
-                        .addDeserializer(InvalidLeaderboardCombinationRestException.class, new InvalidLeaderboardCombinationRestExceptionDeserializer(InvalidLeaderboardCombinationRestException.class))
+                        .addDeserializer(InvalidLeaderboardCombinationRestException.class, new InvalidLeaderboardCombinationRestExceptionDeserializer())
         );
 
         exceptionHandler.registerException("leaderboard-1", InvalidLeaderboardCombinationRestException.class);

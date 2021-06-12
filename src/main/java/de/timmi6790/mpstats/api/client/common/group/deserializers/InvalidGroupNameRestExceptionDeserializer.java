@@ -17,8 +17,8 @@ public class InvalidGroupNameRestExceptionDeserializer extends StdDeserializer<I
     @Serial
     private static final long serialVersionUID = 1927719868056440603L;
 
-    public InvalidGroupNameRestExceptionDeserializer(final Class<InvalidGroupNameRestException> vc) {
-        super(vc);
+    public InvalidGroupNameRestExceptionDeserializer() {
+        super(InvalidGroupNameRestException.class);
     }
 
     @Override

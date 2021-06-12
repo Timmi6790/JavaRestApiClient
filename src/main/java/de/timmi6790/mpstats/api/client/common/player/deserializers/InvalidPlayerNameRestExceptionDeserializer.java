@@ -14,8 +14,8 @@ public class InvalidPlayerNameRestExceptionDeserializer extends StdDeserializer<
     @Serial
     private static final long serialVersionUID = 1847756821870120579L;
 
-    public InvalidPlayerNameRestExceptionDeserializer(final Class<InvalidPlayerNameRestException> vc) {
-        super(vc);
+    public InvalidPlayerNameRestExceptionDeserializer() {
+        super(InvalidPlayerNameRestException.class);
     }
 
     @Override

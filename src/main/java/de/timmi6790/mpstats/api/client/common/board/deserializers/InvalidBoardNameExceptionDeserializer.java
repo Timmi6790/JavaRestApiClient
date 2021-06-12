@@ -17,8 +17,8 @@ public class InvalidBoardNameExceptionDeserializer extends StdDeserializer<Inval
     @Serial
     private static final long serialVersionUID = -8284625479441841472L;
 
-    public InvalidBoardNameExceptionDeserializer(final Class<InvalidBoardNameException> vc) {
-        super(vc);
+    public InvalidBoardNameExceptionDeserializer() {
+        super(InvalidBoardNameException.class);
     }
 
     @Override

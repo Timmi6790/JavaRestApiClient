@@ -16,8 +16,8 @@ public class GroupDeserializer extends StdDeserializer<Group> {
     @Serial
     private static final long serialVersionUID = -9033303933550042234L;
 
-    public GroupDeserializer(final Class<Group> vc) {
-        super(vc);
+    public GroupDeserializer() {
+        super(Group.class);
     }
 
     @Override

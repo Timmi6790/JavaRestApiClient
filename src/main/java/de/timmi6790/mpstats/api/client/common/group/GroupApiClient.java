@@ -38,8 +38,8 @@ public class GroupApiClient<P extends Player> extends AbstractApiClient {
 
         this.getObjectMapper().registerModule(
                 new SimpleModule()
-                        .addDeserializer(Group.class, new GroupDeserializer(Group.class))
-                        .addDeserializer(InvalidGroupNameRestException.class, new InvalidGroupNameRestExceptionDeserializer(InvalidGroupNameRestException.class))
+                        .addDeserializer(Group.class, new GroupDeserializer())
+                        .addDeserializer(InvalidGroupNameRestException.class, new InvalidGroupNameRestExceptionDeserializer())
         );
 
         this.getExceptionHandler()

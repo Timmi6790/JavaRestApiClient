@@ -18,7 +18,7 @@ public class JavaMpStatsApiClient extends BaseApiClient<JavaPlayer> {
 
         this.getObjectMapper().registerModule(
                 new SimpleModule()
-                        .addDeserializer(JavaPlayer.class, new JavaPlayerDeserializer(JavaPlayer.class))
+                        .addDeserializer(JavaPlayer.class, new JavaPlayerDeserializer())
         );
 
         this.playerClient = new JavaPlayerApiClient(baseUrl, apiKey, this.getSchema(), this.getObjectMapper(), this.getExceptionHandler());

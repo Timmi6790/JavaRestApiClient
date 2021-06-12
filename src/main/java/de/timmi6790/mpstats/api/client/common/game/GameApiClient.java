@@ -30,10 +30,10 @@ public class GameApiClient extends AbstractApiClient {
 
         this.getObjectMapper().registerModule(
                 new SimpleModule()
-                        .addDeserializer(Game.class, new GameDeserializer(Game.class))
-                        .addDeserializer(GameCategory.class, new GameCategoryDeserializer(GameCategory.class))
-                        .addDeserializer(InvalidGameNameRestException.class, new InvalidGameNameRestExceptionDeserializer(InvalidGameNameRestException.class))
-                        .addDeserializer(InvalidGameCategoryNameRestException.class, new InvalidGameCategoryNameRestExceptionDeserializer(InvalidGameCategoryNameRestException.class))
+                        .addDeserializer(Game.class, new GameDeserializer())
+                        .addDeserializer(GameCategory.class, new GameCategoryDeserializer())
+                        .addDeserializer(InvalidGameNameRestException.class, new InvalidGameNameRestExceptionDeserializer())
+                        .addDeserializer(InvalidGameCategoryNameRestException.class, new InvalidGameCategoryNameRestExceptionDeserializer())
         );
 
         exceptionHandler.registerException("game-1", InvalidGameNameRestException.class);

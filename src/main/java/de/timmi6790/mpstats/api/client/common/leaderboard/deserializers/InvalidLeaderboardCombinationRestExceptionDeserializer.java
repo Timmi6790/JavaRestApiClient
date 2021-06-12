@@ -17,8 +17,8 @@ public class InvalidLeaderboardCombinationRestExceptionDeserializer extends StdD
     @Serial
     private static final long serialVersionUID = 3342025404018887507L;
 
-    public InvalidLeaderboardCombinationRestExceptionDeserializer(final Class<InvalidLeaderboardCombinationRestException> vc) {
-        super(vc);
+    public InvalidLeaderboardCombinationRestExceptionDeserializer() {
+        super(InvalidLeaderboardCombinationRestException.class);
     }
 
     @Override

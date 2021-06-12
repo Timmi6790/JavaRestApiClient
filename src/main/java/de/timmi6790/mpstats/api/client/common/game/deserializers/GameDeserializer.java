@@ -15,8 +15,8 @@ public class GameDeserializer extends StdDeserializer<Game> {
     @Serial
     private static final long serialVersionUID = 8709573577191990693L;
 
-    public GameDeserializer(final Class<Game> vc) {
-        super(vc);
+    public GameDeserializer() {
+        super(Game.class);
     }
 
     @Override

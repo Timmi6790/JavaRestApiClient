@@ -16,7 +16,7 @@ public class BedrockMpStatsApiClient extends BaseApiClient<BedrockPlayer> {
 
         this.getObjectMapper().registerModule(
                 new SimpleModule()
-                        .addDeserializer(BedrockPlayer.class, new BedrockPlayerDeserializer(BedrockPlayer.class))
+                        .addDeserializer(BedrockPlayer.class, new BedrockPlayerDeserializer())
         );
 
         this.playerClient = new BedrockPlayerApiClient(baseUrl, apiKey, this.getSchema(), this.getObjectMapper(), this.getExceptionHandler());

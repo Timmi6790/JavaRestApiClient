@@ -27,7 +27,7 @@ public class StatApiClient extends AbstractApiClient {
         this.getObjectMapper().registerModule(
                 new SimpleModule()
                         .addDeserializer(Stat.class, new StatDeserializer(Stat.class))
-                        .addDeserializer(InvalidStatNameRestException.class, new InvalidStatNameRestExceptionDeserializer(InvalidStatNameRestException.class))
+                        .addDeserializer(InvalidStatNameRestException.class, new InvalidStatNameRestExceptionDeserializer())
         );
 
         exceptionHandler.registerException("stat-1", InvalidStatNameRestException.class);

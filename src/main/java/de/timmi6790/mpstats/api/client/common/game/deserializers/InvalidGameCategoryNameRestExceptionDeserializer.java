@@ -17,8 +17,8 @@ public class InvalidGameCategoryNameRestExceptionDeserializer extends StdDeseria
     @Serial
     private static final long serialVersionUID = -4368576439344178083L;
 
-    public InvalidGameCategoryNameRestExceptionDeserializer(final Class<InvalidGameCategoryNameRestException> vc) {
-        super(vc);
+    public InvalidGameCategoryNameRestExceptionDeserializer() {
+        super(InvalidGameCategoryNameRestException.class);
     }
 
     @Override

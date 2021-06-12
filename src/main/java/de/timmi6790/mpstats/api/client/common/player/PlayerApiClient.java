@@ -48,9 +48,9 @@ public class PlayerApiClient<P extends Player> extends AbstractApiClient {
         this.getObjectMapper().registerModule(
                 new SimpleModule()
                         .addDeserializer(PlayerStats.class, new PlayerStatsDeserializer<>(playerStatsType, playerClass))
-                        .addDeserializer(GeneratedPlayerEntry.class, new GeneratedPlayerEntryDeserializer(GeneratedPlayerEntry.class))
-                        .addDeserializer(PlayerEntry.class, new PlayerEntryDeserializer(PlayerEntry.class))
-                        .addDeserializer(InvalidPlayerNameRestException.class, new InvalidPlayerNameRestExceptionDeserializer(InvalidPlayerNameRestException.class))
+                        .addDeserializer(GeneratedPlayerEntry.class, new GeneratedPlayerEntryDeserializer())
+                        .addDeserializer(PlayerEntry.class, new PlayerEntryDeserializer())
+                        .addDeserializer(InvalidPlayerNameRestException.class, new InvalidPlayerNameRestExceptionDeserializer())
         );
 
         exceptionHandler.registerException("player-1", InvalidPlayerNameRestException.class);

@@ -14,8 +14,8 @@ public class JavaPlayerDeserializer extends StdDeserializer<JavaPlayer> {
     @Serial
     private static final long serialVersionUID = 1972105464341747687L;
 
-    public JavaPlayerDeserializer(final Class<?> vc) {
-        super(vc);
+    public JavaPlayerDeserializer() {
+        super(JavaPlayer.class);
     }
 
     @Override

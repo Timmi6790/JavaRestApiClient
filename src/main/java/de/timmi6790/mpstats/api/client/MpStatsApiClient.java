@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Getter
+// TODO: Handle nginx responses for api down
 public class MpStatsApiClient {
     private final JavaMpStatsApiClient javaClient;
     private final BedrockMpStatsApiClient bedrockClient;
@@ -47,18 +48,6 @@ public class MpStatsApiClient {
 
         System.out.println("------------ Bedrock PlayerStats -----------------");
         System.out.println(apiClient.getBedrockClient().getPlayerClient().getPlayerStats("usniic", false, EnumSet.noneOf(Reason.class)));
-        System.out.println("------------------------------------");
-
-        System.out.println("------------ Filter -----------------");
-        System.out.println(apiClient.getJavaClient().getFilterClient().createFilter(
-                "Global",
-                "ExpEarned",
-                "All",
-                "DC_",
-                Reason.GLITCHED,
-                ZonedDateTime.now(),
-                ZonedDateTime.now().plusDays(9999)
-        ));
         System.out.println("------------------------------------");
 
         System.out.println("------------ Game -----------------");

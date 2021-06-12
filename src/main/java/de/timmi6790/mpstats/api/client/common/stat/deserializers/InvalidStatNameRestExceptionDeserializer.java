@@ -17,8 +17,8 @@ public class InvalidStatNameRestExceptionDeserializer extends StdDeserializer<In
     @Serial
     private static final long serialVersionUID = 6965629702053851954L;
 
-    public InvalidStatNameRestExceptionDeserializer(final Class<InvalidStatNameRestException> vc) {
-        super(vc);
+    public InvalidStatNameRestExceptionDeserializer() {
+        super(InvalidStatNameRestException.class);
     }
 
     @Override
