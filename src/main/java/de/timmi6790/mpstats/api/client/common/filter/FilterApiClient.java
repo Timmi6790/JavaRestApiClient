@@ -7,7 +7,9 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import de.timmi6790.mpstats.api.client.AbstractApiClient;
 import de.timmi6790.mpstats.api.client.common.board.exceptions.InvalidBoardNameException;
 import de.timmi6790.mpstats.api.client.common.filter.deserializers.FilterDeserializer;
+import de.timmi6790.mpstats.api.client.common.filter.deserializers.FilterDurationDeserializer;
 import de.timmi6790.mpstats.api.client.common.filter.models.Filter;
+import de.timmi6790.mpstats.api.client.common.filter.models.FilterDuration;
 import de.timmi6790.mpstats.api.client.common.filter.models.Reason;
 import de.timmi6790.mpstats.api.client.common.game.exceptions.InvalidGameNameRestException;
 import de.timmi6790.mpstats.api.client.common.leaderboard.exceptions.InvalidLeaderboardCombinationRestException;
@@ -41,6 +43,7 @@ public class FilterApiClient<P extends Player> extends AbstractApiClient {
         this.getObjectMapper().registerModule(
                 new SimpleModule()
                         .addDeserializer(Filter.class, new FilterDeserializer<>(filterType, playerClass))
+                        .addDeserializer(FilterDuration.class, new FilterDurationDeserializer())
         );
     }
 

@@ -6,13 +6,13 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import de.timmi6790.mpstats.api.client.common.filter.models.Filter;
+import de.timmi6790.mpstats.api.client.common.filter.models.FilterDuration;
 import de.timmi6790.mpstats.api.client.common.filter.models.Reason;
 import de.timmi6790.mpstats.api.client.common.leaderboard.models.Leaderboard;
 import de.timmi6790.mpstats.api.client.common.player.models.Player;
 
 import java.io.IOException;
 import java.io.Serial;
-import java.time.ZonedDateTime;
 
 public class FilterDeserializer<P extends Player> extends StdDeserializer<Filter<P>> {
     @Serial
@@ -31,6 +31,7 @@ public class FilterDeserializer<P extends Player> extends StdDeserializer<Filter
 
         final P player = ctxt.readValue(node.get("player").traverse(jsonParser.getCodec()), this.playerClass);
         final Leaderboard leaderboard = ctxt.readValue(node.get("leaderboard").traverse(jsonParser.getCodec()), Leaderboard.class);
+        final FilterDuration filterDuration = ctxt.readValue(node.get("filterDuration").traverse(jsonParser.getCodec()), FilterDuration.class);
 
         final String reasonText = node.get("reason").asText();
 
@@ -38,8 +39,8 @@ public class FilterDeserializer<P extends Player> extends StdDeserializer<Filter
                 player,
                 leaderboard,
                 Reason.valueOf(reasonText),
-                ZonedDateTime.parse(node.get("start").asText()),
-                ZonedDateTime.parse(node.get("end").asText())
+                node.get("permanent").booleanValue(),
+                filterDuration
         );
     }
 }
