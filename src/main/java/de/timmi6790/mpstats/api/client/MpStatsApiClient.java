@@ -21,7 +21,7 @@ public class MpStatsApiClient {
     private final BedrockMpStatsApiClient bedrockClient;
 
     public MpStatsApiClient(final String apiKey) {
-        this("http://127.0.0.1:8080", apiKey);
+        this("https://mpstats2.timmi6790.de", apiKey);
     }
 
     public MpStatsApiClient(final String baseUrl, final String apiKey) {
@@ -32,9 +32,10 @@ public class MpStatsApiClient {
     @SneakyThrows
     public static void main(final String[] args) {
         // Btw, don't even try this key for the production api
-        final MpStatsApiClient apiClient = new MpStatsApiClient("42626cf4-ae01-4884-9e51-7ed962f0b81a");
+        final MpStatsApiClient apiClient = new MpStatsApiClient("http://127.0.0.1:8080", null);
 
         System.out.println("------------ Java Group -----------------");
+        System.out.println(apiClient.getJavaClient().getGroupClient().getGroups());
         System.out.println(apiClient.getJavaClient().getGroupClient().getPlayerStats(
                 "Alien",
                 "Timmi6790",
