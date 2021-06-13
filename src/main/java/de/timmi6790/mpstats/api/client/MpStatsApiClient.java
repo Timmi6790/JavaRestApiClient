@@ -35,6 +35,7 @@ public class MpStatsApiClient {
         final MpStatsApiClient apiClient = new MpStatsApiClient("http://127.0.0.1:8080", null);
 
         System.out.println("------------ Java Group -----------------");
+        System.out.println(apiClient.getJavaClient().getGroupClient().getGroup("Arcade"));
         System.out.println(apiClient.getJavaClient().getGroupClient().getGroups());
         System.out.println(apiClient.getJavaClient().getGroupClient().getPlayerStats(
                 "Alien",

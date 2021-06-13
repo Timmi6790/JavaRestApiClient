@@ -90,6 +90,20 @@ public class GroupApiClient<P extends Player> extends AbstractApiClient {
         ).orElseGet(ArrayList::new);
     }
 
+    public Group getGroup(final String groupName) throws InvalidGroupNameRestException {
+        final HttpUrl url = HttpUrl.parse(this.getGroupBaseUrl() + "/" + groupName);
+        try {
+            return this.getResponseThrow(
+                    this.constructGetRequest(url),
+                    Group.class
+            );
+        } catch (final InvalidGroupNameRestException exception) {
+            throw exception;
+        } catch (final BaseRestException baseRestException) {
+            throw new UnknownApiException(baseRestException);
+        }
+    }
+
     public Optional<GroupPlayerStats<P>> getPlayerStats(final String groupName,
                                                         final String playerName,
                                                         final String statName,
