@@ -1,5 +1,6 @@
 package de.timmi6790.mpstats.api.client.common.group;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -20,6 +21,8 @@ import de.timmi6790.mpstats.api.client.exception.exceptions.UnknownApiException;
 import okhttp3.HttpUrl;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -74,6 +77,15 @@ public class GroupApiClient<P extends Player> extends AbstractApiClient {
         } catch (final BaseRestException baseRestException) {
             throw new UnknownApiException(baseRestException);
         }
+    }
+
+    public List<Group> getGroups() {
+        final HttpUrl url = HttpUrl.parse(this.getGroupBaseUrl());
+        return this.getResponse(
+                this.constructGetRequest(url),
+                new TypeReference<List<Group>>() {
+                }
+        ).orElseGet(ArrayList::new);
     }
 
     public Optional<PlayerStats<P>> getPlayerStats(final String groupName,
