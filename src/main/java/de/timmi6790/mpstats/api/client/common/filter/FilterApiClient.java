@@ -51,6 +51,21 @@ public class FilterApiClient<P extends Player> extends AbstractApiClient {
         return this.getObjectMapper().getTypeFactory().constructParametricType(Filter.class, this.playerClass);
     }
 
+    protected Optional<Filter<P>> createFilter(final HttpUrl url) throws InvalidStatNameRestException, InvalidGameNameRestException, InvalidPlayerNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
+        try {
+            final Filter<P> filter = this.getResponseThrow(
+                    this.constructPostRequest(url),
+                    new TypeReference<>() {
+                    }
+            );
+            return Optional.ofNullable(filter);
+        } catch (final InvalidPlayerNameRestException | InvalidLeaderboardCombinationRestException | InvalidStatNameRestException | InvalidBoardNameException | InvalidGameNameRestException e) {
+            throw e;
+        } catch (final BaseRestException baseRestException) {
+            throw new UnknownApiException(baseRestException);
+        }
+    }
+
     protected String getFilterBaseUrl() {
         return this.getBaseSchemaUrl() + "/filter";
     }
@@ -62,6 +77,18 @@ public class FilterApiClient<P extends Player> extends AbstractApiClient {
                 new TypeReference<List<Filter<P>>>() {
                 }
         ).orElseGet(ArrayList::new);
+    }
+
+    public Optional<Filter<P>> createPermanentFilter(final String gameName,
+                                                     final String statName,
+                                                     final String boardName,
+                                                     final String playerName,
+                                                     final Reason reason) throws InvalidStatNameRestException, InvalidGameNameRestException, InvalidPlayerNameRestException, InvalidLeaderboardCombinationRestException, InvalidBoardNameException {
+        final HttpUrl url = HttpUrl.parse(this.getFilterBaseUrl() + "/permanent/" + gameName + "/" + statName + "/" + boardName + "/" + playerName)
+                .newBuilder()
+                .addQueryParameter("reason", reason.toString())
+                .build();
+        return this.createFilter(url);
     }
 
     public Optional<Filter<P>> createFilter(final String gameName,
@@ -77,18 +104,7 @@ public class FilterApiClient<P extends Player> extends AbstractApiClient {
                 .addQueryParameter("filterStart", filterStart.toString())
                 .addQueryParameter("filterEnd", filterEnd.toString())
                 .build();
-        try {
-            final Filter<P> filter = this.getResponseThrow(
-                    this.constructPostRequest(url),
-                    new TypeReference<>() {
-                    }
-            );
-            return Optional.ofNullable(filter);
-        } catch (final InvalidPlayerNameRestException | InvalidLeaderboardCombinationRestException | InvalidStatNameRestException | InvalidBoardNameException | InvalidGameNameRestException e) {
-            throw e;
-        } catch (final BaseRestException baseRestException) {
-            throw new UnknownApiException(baseRestException);
-        }
+        return this.createFilter(url);
     }
 
     public void removeFilter(final String gameName,
