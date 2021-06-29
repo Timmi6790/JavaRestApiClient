@@ -31,15 +31,21 @@ public class FilterDeserializer<P extends Player> extends StdDeserializer<Filter
 
         final P player = ctxt.readValue(node.get("player").traverse(jsonParser.getCodec()), this.playerClass);
         final Leaderboard leaderboard = ctxt.readValue(node.get("leaderboard").traverse(jsonParser.getCodec()), Leaderboard.class);
-        final FilterDuration filterDuration = ctxt.readValue(node.get("filterDuration").traverse(jsonParser.getCodec()), FilterDuration.class);
-
         final String reasonText = node.get("reason").asText();
+
+        final boolean permanentFilter = node.get("permanent").booleanValue();
+        final FilterDuration filterDuration;
+        if (permanentFilter) {
+            filterDuration = null;
+        } else {
+            filterDuration = ctxt.readValue(node.get("filterDuration").traverse(jsonParser.getCodec()), FilterDuration.class);
+        }
 
         return new Filter<>(
                 player,
                 leaderboard,
                 Reason.valueOf(reasonText),
-                node.get("permanent").booleanValue(),
+                permanentFilter,
                 filterDuration
         );
     }

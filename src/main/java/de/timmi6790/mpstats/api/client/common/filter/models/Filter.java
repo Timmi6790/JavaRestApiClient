@@ -5,6 +5,8 @@ import de.timmi6790.mpstats.api.client.common.player.models.Player;
 import lombok.Data;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
 @Data
 public class Filter<P extends Player> {
     private final P player;
@@ -13,4 +15,8 @@ public class Filter<P extends Player> {
     private final boolean permanent;
     @Nullable
     private final FilterDuration filterDuration;
+
+    public Optional<FilterDuration> getFilterDuration() {
+        return Optional.ofNullable(this.filterDuration);
+    }
 }
