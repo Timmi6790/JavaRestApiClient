@@ -44,6 +44,7 @@ public class OkHttpClientUtilities {
         final String finalApiKey = apiKey;
         client = new OkHttpClient.Builder()
                 .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
                 .dispatcher(dispatcher)
                 .connectionPool(connectionPool)
                 .addInterceptor(chain -> {
